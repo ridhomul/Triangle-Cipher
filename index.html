@@ -83,89 +83,15 @@
     <textarea id="inputText" placeholder="Masukkan plaintext atau ciphertext di sini..."></textarea>
 
     <div class="button-group">
-        <button id="btn-encrypt" onclick="processCipher(true)">Enkripsi</button>
-        <button id="btn-decrypt" onclick="processCipher(false)">Dekripsi</button>
+        <button id="btn-encrypt">Enkripsi</button>
+        <button id="btn-decrypt">Dekripsi</button>
     </div>
 
     <label for="outputText">Hasil Keluaran:</label>
     <textarea id="outputText" readonly placeholder="Hasil akan muncul di sini..."></textarea>
 </div>
 
-<script>
-    // Membangun pola segitiga dari kunci
-    function generateTrianglePattern(key) {
-        let n = key.length;
-        if (n === 0) return [];
-        
-        let tri = [];
-        // Fase naik (i = 0 .. n-1)
-        for (let i = 0; i < n; i++) {
-            tri.push(key.charCodeAt(i) % 95);
-        }
-        
-        // Fase turun (i = n .. 2n-3)
-        // Periode T = 2n - 2 (jika n=1, T=1, tidak ada fase turun)
-        if (n > 1) {
-            for (let i = n; i <= 2 * n - 3; i++) {
-                tri.push(key.charCodeAt(2 * n - 2 - i) % 95);
-            }
-        }
-        return tri;
-    }
-
-    // Fungsi utilitas untuk Ring ASCII
-    function toRing(c) {
-        return c.charCodeAt(0) - 32;
-    }
-
-    function fromRing(r) {
-        return String.fromCharCode(r + 32);
-    }
-
-    // Fungsi utama Enkripsi/Dekripsi
-    function processCipher(isEncrypt) {
-        const key = document.getElementById('key').value;
-        const text = document.getElementById('inputText').value;
-        const outputField = document.getElementById('outputText');
-
-        if (!key) {
-            alert("Harap masukkan kunci!");
-            return;
-        }
-        if (!text) {
-            alert("Harap masukkan teks!");
-            return;
-        }
-
-        const tri = generateTrianglePattern(key);
-        const T = tri.length; 
-        let result = "";
-
-        for (let i = 0; i < text.length; i++) {
-            let charCode = text.charCodeAt(i);
-            
-            // Enkripsi hanya bekerja dalam ring karakter ASCII cetak (32-126)
-            if (charCode >= 32 && charCode <= 126) {
-                let shift = tri[i % T];
-                let ringValue = toRing(text[i]);
-                let newRingValue;
-
-                if (isEncrypt) {
-                    newRingValue = (ringValue + shift) % 95;
-                } else {
-                    newRingValue = (ringValue - shift + 95) % 95;
-                }
-                
-                result += fromRing(newRingValue);
-            } else {
-                // Karakter di luar ring dibiarkan tidak berubah
-                result += text[i];
-            }
-        }
-
-        outputField.value = result;
-    }
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
