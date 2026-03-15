@@ -39,7 +39,7 @@ Operasi yang sama tetapi dengan mengurangi shift: `(ringValue - shift + 95) % 95
 ## Cara Menggunakan
 
 ### 1. Buka Aplikasi
-Buka file `index.html` di browser favorit Anda.
+Buka file `[text](https://ridhomul-cipher.vercel.app/)` di browser favorit Anda.
 
 ### 2. Masukkan Kunci
 - Ketik kunci enkripsi di field **Kunci (Key)**
