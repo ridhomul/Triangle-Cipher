@@ -1,15 +1,15 @@
-// Membangun pola segitiga dari kunci [cite: 9, 10]
+// Membangun pola segitiga dari kunci
 function generateTrianglePattern(key) {
     let n = key.length;
     if (n === 0) return [];
     
     let tri = [];
-    // Fase naik (i = 0 .. n-1) [cite: 11]
+    // Fase naik (i = 0 .. n-1)
     for (let i = 0; i < n; i++) {
         tri.push(key.charCodeAt(i) % 95);
     }
     
-    // Fase turun (i = n .. 2n-3) [cite: 12]
+    // Fase turun (i = n .. 2n-3) 
     if (n > 1) {
         for (let i = n; i <= 2 * n - 3; i++) {
             tri.push(key.charCodeAt(2 * n - 2 - i) % 95);
@@ -18,13 +18,13 @@ function generateTrianglePattern(key) {
     return tri;
 }
 
-// Fungsi utilitas untuk Ring ASCII cetak (32-126) [cite: 24]
+// Fungsi utilitas untuk Ring ASCII cetak (32-126) 
 function toRing(c) {
-    return c.charCodeAt(0) - 32; // [cite: 25]
+    return c.charCodeAt(0) - 32; 
 }
 
 function fromRing(r) {
-    return String.fromCharCode(r + 32); // [cite: 26]
+    return String.fromCharCode(r + 32); 
 }
 
 // Fungsi utama Enkripsi/Dekripsi
@@ -49,21 +49,21 @@ function processCipher(isEncrypt) {
     for (let i = 0; i < text.length; i++) {
         let charCode = text.charCodeAt(i);
         
-        // Memastikan proses hanya berjalan dalam ring karakter ASCII cetak (32-126) [cite: 39]
+        // Memastikan proses hanya berjalan dalam ring karakter ASCII cetak (32-126) 
         if (charCode >= 32 && charCode <= 126) {
             let shift = tri[i % T]; // [cite: 40, 48]
             let ringValue = toRing(text[i]);
             let newRingValue;
 
             if (isEncrypt) {
-                newRingValue = (ringValue + shift) % 95; // [cite: 30, 41]
+                newRingValue = (ringValue + shift) % 95; 
             } else {
-                newRingValue = (ringValue - shift + 95) % 95; // [cite: 32, 49]
+                newRingValue = (ringValue - shift + 95) % 95; 
             }
             
             result += fromRing(newRingValue); 
         } else {
-            // Karakter di luar ring dibiarkan tidak berubah [cite: 42]
+            // Karakter di luar ring dibiarkan tidak berubah 
             result += text[i];
         }
     }
