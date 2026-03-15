@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TriangleKey Cipher</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: monospace;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        #btn-encrypt {
+            background-color: #3498db;
+        }
+        #btn-encrypt:hover {
+            background-color: #2980b9;
+        }
+        #btn-decrypt {
+            background-color: #e74c3c;
+        }
+        #btn-decrypt:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>TriangleKey Cipher</h1>
+    
+    <label for="key">Kunci (Key):</label>
+    <input type="text" id="key" placeholder="Masukkan kunci (contoh: KUNCI)">
+
+    <label for="inputText">Teks Input:</label>
+    <textarea id="inputText" placeholder="Masukkan plaintext atau ciphertext di sini..."></textarea>
+
+    <div class="button-group">
+        <button id="btn-encrypt" onclick="processCipher(true)">Enkripsi</button>
+        <button id="btn-decrypt" onclick="processCipher(false)">Dekripsi</button>
+    </div>
+
+    <label for="outputText">Hasil Keluaran:</label>
+    <textarea id="outputText" readonly placeholder="Hasil akan muncul di sini..."></textarea>
+</div>
+
+<script>
+    // Membangun pola segitiga dari kunci
+    function generateTrianglePattern(key) {
+        let n = key.length;
+        if (n === 0) return [];
+        
+        let tri = [];
+        // Fase naik (i = 0 .. n-1)
+        for (let i = 0; i < n; i++) {
+            tri.push(key.charCodeAt(i) % 95);
+        }
+        
+        // Fase turun (i = n .. 2n-3)
+        // Periode T = 2n - 2 (jika n=1, T=1, tidak ada fase turun)
+        if (n > 1) {
+            for (let i = n; i <= 2 * n - 3; i++) {
+                tri.push(key.charCodeAt(2 * n - 2 - i) % 95);
+            }
+        }
+        return tri;
+    }
+
+    // Fungsi utilitas untuk Ring ASCII
+    function toRing(c) {
+        return c.charCodeAt(0) - 32;
+    }
+
+    function fromRing(r) {
+        return String.fromCharCode(r + 32);
+    }
+
+    // Fungsi utama Enkripsi/Dekripsi
+    function processCipher(isEncrypt) {
+        const key = document.getElementById('key').value;
+        const text = document.getElementById('inputText').value;
+        const outputField = document.getElementById('outputText');
+
+        if (!key) {
+            alert("Harap masukkan kunci!");
+            return;
+        }
+        if (!text) {
+            alert("Harap masukkan teks!");
+            return;
+        }
+
+        const tri = generateTrianglePattern(key);
+        const T = tri.length; 
+        let result = "";
+
+        for (let i = 0; i < text.length; i++) {
+            let charCode = text.charCodeAt(i);
+            
+            // Enkripsi hanya bekerja dalam ring karakter ASCII cetak (32-126)
+            if (charCode >= 32 && charCode <= 126) {
+                let shift = tri[i % T];
+                let ringValue = toRing(text[i]);
+                let newRingValue;
+
+                if (isEncrypt) {
+                    newRingValue = (ringValue + shift) % 95;
+                } else {
+                    newRingValue = (ringValue - shift + 95) % 95;
+                }
+                
+                result += fromRing(newRingValue);
+            } else {
+                // Karakter di luar ring dibiarkan tidak berubah
+                result += text[i];
+            }
+        }
+
+        outputField.value = result;
+    }
+</script>
+
+</body>
+</html>
